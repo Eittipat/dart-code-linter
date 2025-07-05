@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:dart_code_linter/lint_analyzer.dart';
+import 'package:dart_code_linter_plus/lint_analyzer.dart';
 
 Future<void> main() async {
   // Get some folder you would like to analyze.

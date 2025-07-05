@@ -51,7 +51,7 @@ class LintAnalysisOptionsValidator {
   static List<_RuleWithSpan>? _getRulesList(YamlNode node) {
     if (node is YamlMap) {
       final rules =
-          (node['dart_code_linter'] as YamlMap?)?['rules'] as YamlNode?;
+          (node['dart_code_linter_plus'] as YamlMap?)?['rules'] as YamlNode?;
       if (rules is YamlList) {
         return rules.nodes
             // ignore: avoid_types_on_closure_parameters

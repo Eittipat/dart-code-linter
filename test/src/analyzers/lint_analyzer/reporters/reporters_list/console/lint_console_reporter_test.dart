@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:ansicolor/ansicolor.dart';
-import 'package:dart_code_linter/src/analyzers/lint_analyzer/reporters/lint_report_params.dart';
-import 'package:dart_code_linter/src/analyzers/lint_analyzer/reporters/reporters_list/console/lint_console_reporter.dart';
+import 'package:dart_code_linter_plus/src/analyzers/lint_analyzer/reporters/lint_report_params.dart';
+import 'package:dart_code_linter_plus/src/analyzers/lint_analyzer/reporters/reporters_list/console/lint_console_reporter.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 

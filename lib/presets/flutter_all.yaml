@@ -1,4 +1,4 @@
-dart_code_linter:
+dart_code_linter_plus:
   rules:
     - prefer-define-hero-tag
     - always-remove-listener

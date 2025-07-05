@@ -1,6 +1,6 @@
-import 'package:dart_code_linter/src/analyzers/lint_analyzer/anti_patterns/models/pattern.dart';
-import 'package:dart_code_linter/src/analyzers/lint_analyzer/anti_patterns/pattern_utils.dart';
-import 'package:dart_code_linter/src/analyzers/lint_analyzer/models/severity.dart';
+import 'package:dart_code_linter_plus/src/analyzers/lint_analyzer/anti_patterns/models/pattern.dart';
+import 'package:dart_code_linter_plus/src/analyzers/lint_analyzer/anti_patterns/pattern_utils.dart';
+import 'package:dart_code_linter_plus/src/analyzers/lint_analyzer/models/severity.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:source_span/source_span.dart';
 import 'package:test/test.dart';

@@ -6,15 +6,15 @@ analyzer:
   # to provide issues highlight in the IDE. If you don't want the issues
   # to be shown and need only the CLI, you need to remove the section below.
   plugins:
-    - dart_code_linter
+    - dart_code_linter_plus
 
-dart_code_linter:
+dart_code_linter_plus:
   # Dart Code Linter supports presets. The config from a preset will be merged
   # with the config listed in this file. The config listed here has a higher priority.
   # Any rule can be simply disabled by setting `- rule-name: false`.
   # Uncomment the section below to see how presets work.
   # extends:
-  #   - package:dart_code_linter/presets/all.yaml
+  #   - package:dart_code_linter_plus/presets/all.yaml
 
   # To enabled anti-patterns and metrics in the analysis report, uncomment the sections below.
   # Metric violations are not shown in the IDE.
@@ -65,3 +65,4 @@ dart_code_linter:
         exclude:
           - test/**
     - prefer-trailing-comma
+    - require-trailing-commas

@@ -3,12 +3,12 @@ import 'package:flutter/src/widgets/framework.dart';
 
 /// This variable is not referenced in any file and is actually unused.
 /// In order to spot such declarations,
-/// run `dart run dart_code_linter:metrics check-unused-code lib`.
+/// run `dart run dart_code_linter_plus:metrics check-unused-code lib`.
 const someVariable = '1';
 
 /// This function is not referenced in any file and is actually unused.
 /// In order to spot such declarations,
-/// run `dart run dart_code_linter:metrics check-unused-code lib`.
+/// run `dart run dart_code_linter_plus:metrics check-unused-code lib`.
 String topLevelFunction() {
   print('Actually unused');
 

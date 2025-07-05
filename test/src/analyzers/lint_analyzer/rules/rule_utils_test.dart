@@ -1,8 +1,8 @@
-import 'package:dart_code_linter/src/analyzers/lint_analyzer/models/replacement.dart';
-import 'package:dart_code_linter/src/analyzers/lint_analyzer/models/severity.dart';
-import 'package:dart_code_linter/src/analyzers/lint_analyzer/rules/models/rule.dart';
-import 'package:dart_code_linter/src/analyzers/lint_analyzer/rules/models/rule_type.dart';
-import 'package:dart_code_linter/src/analyzers/lint_analyzer/rules/rule_utils.dart';
+import 'package:dart_code_linter_plus/src/analyzers/lint_analyzer/models/replacement.dart';
+import 'package:dart_code_linter_plus/src/analyzers/lint_analyzer/models/severity.dart';
+import 'package:dart_code_linter_plus/src/analyzers/lint_analyzer/rules/models/rule.dart';
+import 'package:dart_code_linter_plus/src/analyzers/lint_analyzer/rules/models/rule_type.dart';
+import 'package:dart_code_linter_plus/src/analyzers/lint_analyzer/rules/rule_utils.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:source_span/source_span.dart';
 import 'package:test/test.dart';

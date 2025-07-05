@@ -1,4 +1,4 @@
-dart_code_linter:
+dart_code_linter_plus:
   rules:
     - avoid-creating-vector-in-update
     - avoid-initializing-in-on-mount

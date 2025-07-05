@@ -1,5 +1,5 @@
 ## Dart Code Linter
-[![Pub](https://img.shields.io/pub/v/dart_code_linter.svg)](https://pub.dev/packages/dart_code_linter)
+[![Pub](https://img.shields.io/pub/v/dart_code_linter_plus.svg)](https://pub.dev/packages/dart_code_linter_plus)
 
 Dart Code Linter (DCL) is a powerful toolkit designed to enhance your development process by identifying and resolving issues within your Dart and Flutter code. Whether you're dealing with potential runtime bugs, violations of best practices, or styling concerns, DCL has got you covered. With a comprehensive collection of over 70 pre-built rules, you can effortlessly validate your code against a variety of expectations. Furthermore, DCL offers the flexibility to customize these rules to cater to your specific requirements, ensuring an optimized coding experience.
 
@@ -13,7 +13,7 @@ Dart Code Linter (DCL) is a powerful toolkit designed to enhance your developmen
 ## Installation
 
 ```sh
-$ dart pub add --dev dart_code_linter
+$ dart pub add --dev dart_code_linter_plus
 ```
 
 ## Basic configuration
@@ -26,9 +26,9 @@ Add configuration to `analysis_options.yaml` and reload IDE to allow the analyze
 ```yaml title="analysis_options.yaml"
 analyzer:
   plugins:
-    - dart_code_linter
+    - dart_code_linter_plus
 
-dart_code_linter:
+dart_code_linter_plus:
   rules:
     - avoid-dynamic
     - avoid-passing-async-when-sync-expected
@@ -53,9 +53,9 @@ dart_code_linter:
 ```yaml title="analysis_options.yaml"
 analyzer:
   plugins:
-    - dart_code_linter
+    - dart_code_linter_plus
 
-dart_code_linter:
+dart_code_linter_plus:
   metrics:
     cyclomatic-complexity: 20
     number-of-parameters: 4
@@ -98,13 +98,13 @@ The package can be used as CLI and supports multiple commands:
 
 | Command            | Example of use                                            | Short description                                         |
 | ------------------ | --------------------------------------------------------- | --------------------------------------------------------- |
-| analyze            | dart run dart_code_linter:metrics analyze lib            | Reports code metrics, rules and anti-patterns violations. |
-| check-unnecessary-nullable | dart run dart_code_linter:metrics check-unnecessary-nullable lib | Checks unnecessary nullable parameters in functions, methods, constructors. |
-| check-unused-files | dart run dart_code_linter:metrics check-unused-files lib | Checks unused \*.dart files.                              |
-| check-unused-l10n  | dart run dart_code_linter:metrics check-unused-l10n lib  | Check unused localization in \*.dart files.               |
-| check-unused-code  | dart run dart_code_linter:metrics check-unused-code lib  | Checks unused code in \*.dart files.                      |
+| analyze            | dart run dart_code_linter_plus:metrics analyze lib            | Reports code metrics, rules and anti-patterns violations. |
+| check-unnecessary-nullable | dart run dart_code_linter_plus:metrics check-unnecessary-nullable lib | Checks unnecessary nullable parameters in functions, methods, constructors. |
+| check-unused-files | dart run dart_code_linter_plus:metrics check-unused-files lib | Checks unused \*.dart files.                              |
+| check-unused-l10n  | dart run dart_code_linter_plus:metrics check-unused-l10n lib  | Check unused localization in \*.dart files.               |
+| check-unused-code  | dart run dart_code_linter_plus:metrics check-unused-code lib  | Checks unused code in \*.dart files.                      |
 
-For additional help on any of the commands, enter `dart run dart_code_linter:metrics help <command>`
+For additional help on any of the commands, enter `dart run dart_code_linter_plus:metrics help <command>`
 
 **Note:** if you're setting up DCL for multi-package repository (a.k.a. monorepo), it'll pick up analysis_options.yaml files correctly.
 
@@ -115,7 +115,7 @@ You can define one analysis_options.yaml at the root file.
 Reports code metrics, rules and anti-patterns violations. To execute the command, run
 
 ```sh
-$ dart run dart_code_linter:metrics analyze lib
+$ dart run dart_code_linter_plus:metrics analyze lib
 ```
 
 It will produce a result in one of the format:
@@ -133,7 +133,7 @@ It will produce a result in one of the format:
 Checks unnecessary nullable parameters in functions, methods, constructors. To execute the command, run
 
 ```sh
-$ dart run dart_code_linter:metrics check-unnecessary-nullable lib
+$ dart run dart_code_linter_plus:metrics check-unnecessary-nullable lib
 ```
 
 It will produce a result in one of the format:
@@ -148,7 +148,7 @@ It will produce a result in one of the format:
 Checks unused `*.dart` files. To execute the command, run
 
 ```sh
-$ dart run dart_code_linter:metrics check-unused-files lib
+$ dart run dart_code_linter_plus:metrics check-unused-files lib
 ```
 
 It will produce a result in one of the format:
@@ -179,7 +179,7 @@ class ClassWithLocalization {
 To execute the command, run
 
 ```sh
-$ dart run dart_code_linter:metrics check-unused-l10n lib
+$ dart run dart_code_linter_plus:metrics check-unused-l10n lib
 ```
 
 It will produce a result in one of the format:
@@ -193,7 +193,7 @@ It will produce a result in one of the format:
 Checks unused code in `*.dart` files. To execute the command, run
 
 ```sh
-$ dart run dart_code_linter:metrics check-unused-code lib
+$ dart run dart_code_linter_plus:metrics check-unused-code lib
 ```
 
 It will produce a result in one of the format:

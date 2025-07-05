@@ -1,17 +1,17 @@
 import 'dart:io';
 
-import 'package:dart_code_linter/src/config_builder/models/analysis_options.dart';
-import 'package:dart_code_linter/src/utils/analyzer_utils.dart';
+import 'package:dart_code_linter_plus/src/config_builder/models/analysis_options.dart';
+import 'package:dart_code_linter_plus/src/utils/analyzer_utils.dart';
 import 'package:test/test.dart';
 
 const _options = {
   'include': 'package:pedantic/analysis_options.yaml',
   'analyzer': {
     'exclude': ['test/resources/**'],
-    'plugins': ['dart_code_linter'],
+    'plugins': ['dart_code_linter_plus'],
     'strong-mode': {'implicit-casts': false, 'implicit-dynamic': false},
   },
-  'dart_code_linter': {
+  'dart_code_linter_plus': {
     'extends': ['package:test_lint/presets.yaml'],
     'anti-patterns': {
       'anti-pattern-id1': true,
@@ -76,10 +76,11 @@ void main() {
         containsAll(<String>['example/**']),
       );
 
-      expect(options.options, contains('dart_code_linter'));
-      expect(options.options['dart_code_linter'], contains('metrics'));
+      expect(options.options, contains('dart_code_linter_plus'));
+      expect(options.options['dart_code_linter_plus'], contains('metrics'));
       expect(
-        (options.options['dart_code_linter'] as Map<String, Object>)['metrics'],
+        (options.options['dart_code_linter_plus']
+            as Map<String, Object>)['metrics'],
         allOf(
           containsPair('metric-id1', 10),
           containsPair('metric-id2', 30),
@@ -87,17 +88,19 @@ void main() {
         ),
       );
 
-      expect(options.options, contains('dart_code_linter'));
-      expect(options.options['dart_code_linter'], contains('metrics-exclude'));
+      expect(options.options, contains('dart_code_linter_plus'));
+      expect(options.options['dart_code_linter_plus'],
+          contains('metrics-exclude'));
       expect(
-        (options.options['dart_code_linter']
+        (options.options['dart_code_linter_plus']
             as Map<String, Object>)['metrics-exclude'],
         containsAll(<String>['test/**', 'documentation/**']),
       );
 
-      expect(options.options['dart_code_linter'], contains('rules'));
+      expect(options.options['dart_code_linter_plus'], contains('rules'));
       expect(
-        (options.options['dart_code_linter'] as Map<String, Object>)['rules'],
+        (options.options['dart_code_linter_plus']
+            as Map<String, Object>)['rules'],
         allOf(
           containsPair('rule-id1', true),
           containsPair('rule-id2', false),
@@ -122,7 +125,7 @@ void main() {
       expect(options.options['analyzer'], isNotEmpty);
       expect(
         (options.options['analyzer'] as Map<String, Object>)['plugins'],
-        equals(['dart_code_linter']),
+        equals(['dart_code_linter_plus']),
       );
     });
 
@@ -135,9 +138,10 @@ void main() {
         collection.contexts.first,
       );
 
-      expect(options.options['dart_code_linter'], contains('rules'));
+      expect(options.options['dart_code_linter_plus'], contains('rules'));
       expect(
-        (options.options['dart_code_linter'] as Map<String, Object>)['rules'],
+        (options.options['dart_code_linter_plus']
+            as Map<String, Object>)['rules'],
         allOf(contains('rule-id10')),
       );
       expect(
@@ -189,7 +193,7 @@ void main() {
 
     test('readMapOfMap returns map with data or not', () async {
       const options = AnalysisOptions(null, {
-        'dart_code_linter': {
+        'dart_code_linter_plus': {
           'metrics': {'metric-id1': 10},
           'metrics-exclude': ['documentation/**'],
           'rules1': ['rule-id1', 'rule-id2', 'rule-id3'],

@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:dart_code_linter/src/analyzers/lint_analyzer/models/internal_resolved_unit_result.dart';
-import 'package:dart_code_linter/src/analyzers/lint_analyzer/models/issue.dart';
-import 'package:dart_code_linter/src/analyzers/lint_analyzer/models/severity.dart';
+import 'package:dart_code_linter_plus/src/analyzers/lint_analyzer/models/internal_resolved_unit_result.dart';
+import 'package:dart_code_linter_plus/src/analyzers/lint_analyzer/models/issue.dart';
+import 'package:dart_code_linter_plus/src/analyzers/lint_analyzer/models/severity.dart';
 import 'package:test/test.dart';
 
 import 'file_resolver.dart';

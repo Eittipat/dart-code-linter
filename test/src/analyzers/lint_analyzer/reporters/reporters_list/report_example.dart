@@ -1,15 +1,15 @@
-import 'package:dart_code_linter/src/analyzers/lint_analyzer/metrics/models/metric_documentation.dart';
-import 'package:dart_code_linter/src/analyzers/lint_analyzer/metrics/models/metric_value.dart';
-import 'package:dart_code_linter/src/analyzers/lint_analyzer/metrics/models/metric_value_level.dart';
-import 'package:dart_code_linter/src/analyzers/lint_analyzer/models/context_message.dart';
-import 'package:dart_code_linter/src/analyzers/lint_analyzer/models/entity_type.dart';
-import 'package:dart_code_linter/src/analyzers/lint_analyzer/models/issue.dart';
-import 'package:dart_code_linter/src/analyzers/lint_analyzer/models/lint_file_report.dart';
-import 'package:dart_code_linter/src/analyzers/lint_analyzer/models/replacement.dart';
-import 'package:dart_code_linter/src/analyzers/lint_analyzer/models/report.dart';
-import 'package:dart_code_linter/src/analyzers/lint_analyzer/models/severity.dart';
-import 'package:dart_code_linter/src/analyzers/lint_analyzer/models/summary_lint_report_record.dart';
-import 'package:dart_code_linter/src/analyzers/lint_analyzer/models/summary_lint_report_record_status.dart';
+import 'package:dart_code_linter_plus/src/analyzers/lint_analyzer/metrics/models/metric_documentation.dart';
+import 'package:dart_code_linter_plus/src/analyzers/lint_analyzer/metrics/models/metric_value.dart';
+import 'package:dart_code_linter_plus/src/analyzers/lint_analyzer/metrics/models/metric_value_level.dart';
+import 'package:dart_code_linter_plus/src/analyzers/lint_analyzer/models/context_message.dart';
+import 'package:dart_code_linter_plus/src/analyzers/lint_analyzer/models/entity_type.dart';
+import 'package:dart_code_linter_plus/src/analyzers/lint_analyzer/models/issue.dart';
+import 'package:dart_code_linter_plus/src/analyzers/lint_analyzer/models/lint_file_report.dart';
+import 'package:dart_code_linter_plus/src/analyzers/lint_analyzer/models/replacement.dart';
+import 'package:dart_code_linter_plus/src/analyzers/lint_analyzer/models/report.dart';
+import 'package:dart_code_linter_plus/src/analyzers/lint_analyzer/models/severity.dart';
+import 'package:dart_code_linter_plus/src/analyzers/lint_analyzer/models/summary_lint_report_record.dart';
+import 'package:dart_code_linter_plus/src/analyzers/lint_analyzer/models/summary_lint_report_record_status.dart';
 import 'package:source_span/source_span.dart';
 
 import '../../../../../stubs_builders.dart';

@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 
 /// This widget is not imported by any other file and is not a project entry point.
 /// It will be reported by `check-unused-files` command.
-/// Run `dart run dart_code_linter:metrics check-unused-files lib` to see the report.
+/// Run `dart run dart_code_linter_plus:metrics check-unused-files lib` to see the report.
 class UnusedWidget extends StatelessWidget {
   const UnusedWidget({super.key});
 

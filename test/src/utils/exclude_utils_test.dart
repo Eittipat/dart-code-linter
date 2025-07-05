@@ -1,4 +1,4 @@
-import 'package:dart_code_linter/src/utils/exclude_utils.dart';
+import 'package:dart_code_linter_plus/src/utils/exclude_utils.dart';
 import 'package:glob/glob.dart';
 import 'package:test/test.dart';
 

@@ -1,4 +1,4 @@
-dart_code_linter:
+dart_code_linter_plus:
   rules:
     - rule-id10
     - rule-id4

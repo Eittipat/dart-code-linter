@@ -92,7 +92,7 @@ class CliRunner extends CommandRunner<void> {
   Future<void> _checkForUpdates() async {
     try {
       final latestVersion =
-          await _pubUpdater?.getLatestVersion('dart_code_linter');
+          await _pubUpdater?.getLatestVersion('dart_code_linter_plus');
       final isUpToDate = packageVersion == latestVersion;
       if (!isUpToDate && latestVersion != null) {
         final changelogLink =

@@ -1,4 +1,4 @@
-dart_code_linter:
+dart_code_linter_plus:
   metrics:
     cyclomatic-complexity: 40
     maximum-nesting-level: 5

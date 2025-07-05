@@ -1,7 +1,7 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:dart_code_linter/src/analyzers/lint_analyzer/metrics/scope_visitor.dart';
-import 'package:dart_code_linter/src/analyzers/lint_analyzer/models/class_type.dart';
-import 'package:dart_code_linter/src/analyzers/lint_analyzer/models/function_type.dart';
+import 'package:dart_code_linter_plus/src/analyzers/lint_analyzer/metrics/scope_visitor.dart';
+import 'package:dart_code_linter_plus/src/analyzers/lint_analyzer/models/class_type.dart';
+import 'package:dart_code_linter_plus/src/analyzers/lint_analyzer/models/function_type.dart';
 import 'package:test/test.dart';
 
 import '../../helpers/file_resolver.dart';

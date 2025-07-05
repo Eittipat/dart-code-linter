@@ -10,7 +10,7 @@ import '../analysis_options_utils.dart';
 
 const _analysisOptionsFileName = 'analysis_options.yaml';
 
-const _rootKey = 'dart_code_linter';
+const _rootKey = 'dart_code_linter_plus';
 
 /// Class representing dart analysis options.
 class AnalysisOptions {

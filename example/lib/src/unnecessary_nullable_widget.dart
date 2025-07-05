@@ -5,7 +5,7 @@ class UnnecessaryNullableWidget extends StatelessWidget {
 
   /// This callback declares a nullable parameter `value`,
   /// but it's actually always used with non-nullable argument.
-  /// Run `dart run dart_code_linter:metrics check-unnecessary-nullable lib` to see the report.
+  /// Run `dart run dart_code_linter_plus:metrics check-unnecessary-nullable lib` to see the report.
   void someCallback(String? value) {
     print(value);
   }

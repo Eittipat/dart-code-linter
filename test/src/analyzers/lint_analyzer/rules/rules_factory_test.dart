@@ -1,4 +1,4 @@
-import 'package:dart_code_linter/src/analyzers/lint_analyzer/rules/rules_factory.dart';
+import 'package:dart_code_linter_plus/src/analyzers/lint_analyzer/rules/rules_factory.dart';
 import 'package:test/test.dart';
 
 void main() {
