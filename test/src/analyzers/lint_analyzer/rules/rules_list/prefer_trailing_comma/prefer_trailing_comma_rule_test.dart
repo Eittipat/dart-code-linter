@@ -10,6 +10,24 @@ const _correctExamplePath =
     'prefer_trailing_comma/examples/correct_example.dart';
 const _incorrectExamplePath =
     'prefer_trailing_comma/examples/incorrect_example.dart';
+const _perPartExamplePath =
+    'prefer_trailing_comma/examples/per_part_example.dart';
+const _allPerPartIssueLines = [
+  4,
+  13,
+  18,
+  23,
+  28,
+  33,
+  46,
+  51,
+  63,
+  68,
+  79,
+  84,
+  89,
+  94,
+];
 
 void main() {
   group('PreferTrailingCommaRule', () {
@@ -30,8 +48,8 @@ void main() {
 
       RuleTestHelper.verifyIssues(
         issues: issues,
-        startLines: [3, 9, 13, 18, 24, 28, 49, 58, 64, 70],
-        startColumns: [50, 7, 5, 52, 9, 8, 59, 3, 3, 3],
+        startLines: [3, 9, 13, 18, 24, 28, 38, 49, 58, 64, 70],
+        startColumns: [50, 7, 5, 52, 9, 8, 3, 59, 3, 3, 3],
         locationTexts: [
           'String thirdArgument',
           "'and another string for length exceed'",
@@ -39,12 +57,14 @@ void main() {
           'String thirdArgument',
           "'and another string for length exceed'",
           "'some other string'",
+          'sixthItem',
           'this.forthField',
           "'and another string for length exceed'",
           "'and another string for length exceed'",
           "'and another string for length exceed': 'and another string for length exceed'",
         ],
         messages: [
+          'Prefer trailing comma.',
           'Prefer trailing comma.',
           'Prefer trailing comma.',
           'Prefer trailing comma.',
@@ -67,6 +87,7 @@ void main() {
           'Add trailing comma.',
           'Add trailing comma.',
           'Add trailing comma.',
+          'Add trailing comma.',
         ],
         replacements: [
           'String thirdArgument,',
@@ -75,6 +96,7 @@ void main() {
           'String thirdArgument,',
           "'and another string for length exceed',",
           "'some other string',",
+          'sixthItem,',
           'this.forthField,',
           "'and another string for length exceed',",
           "'and another string for length exceed',",
@@ -98,8 +120,8 @@ void main() {
 
       RuleTestHelper.verifyIssues(
         issues: issues,
-        startLines: [9, 17, 19, 37, 41, 91, 99, 109, 119],
-        startColumns: [21, 33, 20, 23, 19, 43, 21, 19, 19],
+        startLines: [9, 17, 19, 37, 41, 75, 91, 99, 109, 119],
+        startColumns: [21, 33, 20, 23, 19, 18, 43, 21, 19, 19],
         locationTexts: [
           'String arg1',
           'void Function() callback',
@@ -110,6 +132,7 @@ void main() {
           '() {\n'
               '      return;\n'
               '    }',
+          'firstItem',
           '0',
           '\'some string\'',
           '\'some string\'',
@@ -125,8 +148,100 @@ void main() {
           'Prefer trailing comma.',
           'Prefer trailing comma.',
           'Prefer trailing comma.',
+          'Prefer trailing comma.',
         ],
       );
+    });
+
+    test('with default config reports issues for all supported parts',
+        () async {
+      final unit = await RuleTestHelper.resolveFromFile(_perPartExamplePath);
+      final issues = PreferTrailingCommaRule().check(unit);
+
+      RuleTestHelper.verifyIssues(
+        issues: issues,
+        startLines: _allPerPartIssueLines,
+      );
+    });
+
+    test('with scoped config applies defaults for absent decomposed rules',
+        () async {
+      final unit = await RuleTestHelper.resolveFromFile(_perPartExamplePath);
+      final config = {
+        'break-on': {
+          'arguments': 'disable',
+          'parameters': 'disable',
+          'enum-values': 'disable',
+          'collections': 'disable',
+        },
+      };
+
+      final issues = PreferTrailingCommaRule(config).check(unit);
+
+      RuleTestHelper.verifyIssues(
+        issues: issues,
+        startLines: [28, 33, 37, 51, 63, 68, 79, 84, 89, 94],
+      );
+    });
+
+    test('with scoped config supports disabling specific decomposed rules',
+        () async {
+      final unit = await RuleTestHelper.resolveFromFile(_perPartExamplePath);
+      final config = {
+        'break-on': {
+          'arguments': 'disable',
+          'parameters': 'disable',
+          'enum-values': 'disable',
+          'collections': 'disable',
+          'type-arguments': 'disable',
+        },
+      };
+
+      final issues = PreferTrailingCommaRule(config).check(unit);
+
+      RuleTestHelper.verifyIssues(
+        issues: issues,
+        startLines: [28, 37, 51, 63, 68, 79, 84, 89, 94],
+      );
+    });
+
+    group('covers all supported scoped rules', () {
+      final cases = <String, List<int>>{
+        'arguments': [13, 38],
+        'parameters': [4, 7, 58],
+        'enum-values': [46],
+        'collections': [18, 23, 39, 40],
+        'type-arguments': [33],
+        'type-parameters': [51],
+        'record-literals': [28, 37],
+        'record-patterns': [79],
+        'object-patterns': [84],
+        'list-patterns': [89],
+        'map-patterns': [94],
+        'record-type-positional-fields': [63],
+        'record-type-named-fields': [68],
+      };
+
+      for (final entry in cases.entries) {
+        test('enabling only "${entry.key}" reports only that rule findings',
+            () async {
+          final unit =
+              await RuleTestHelper.resolveFromFile(_perPartExamplePath);
+          final config = {
+            'break-on': {
+              'all': 'disable',
+              entry.key: 1,
+            },
+          };
+
+          final issues = PreferTrailingCommaRule(config).check(unit);
+
+          RuleTestHelper.verifyIssues(
+            issues: issues,
+            startLines: entry.value,
+          );
+        });
+      }
     });
   });
 }
