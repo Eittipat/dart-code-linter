@@ -120,37 +120,42 @@ void main() {
 
       RuleTestHelper.verifyIssues(
         issues: issues,
-        startLines: [9, 17, 19, 37, 41, 75, 91, 99, 109, 119],
-        startColumns: [21, 33, 20, 23, 19, 18, 43, 21, 19, 19],
+        startLines: [37, 41],
+        startColumns: [23, 19],
         locationTexts: [
-          'String arg1',
-          'void Function() callback',
-          'void Function() callback',
           '() {\n'
               '      return;\n'
               '    }',
           '() {\n'
               '      return;\n'
               '    }',
-          'firstItem',
-          '0',
-          '\'some string\'',
-          '\'some string\'',
-          '\'some string\': \'some string\'',
         ],
         messages: [
           'Prefer trailing comma.',
           'Prefer trailing comma.',
-          'Prefer trailing comma.',
-          'Prefer trailing comma.',
-          'Prefer trailing comma.',
-          'Prefer trailing comma.',
-          'Prefer trailing comma.',
-          'Prefer trailing comma.',
-          'Prefer trailing comma.',
-          'Prefer trailing comma.',
         ],
       );
+    });
+
+    test('skips when opening and closing tokens are on the same line',
+        () async {
+      final unit = await RuleTestHelper.createAndResolveFromFile(
+        content: '''
+void takeTwo(int first, int second) {}
+
+void main() {
+  takeTwo(1, 2);
+  final values = [1, 2];
+  final record = (1, 2);
+}
+''',
+        filePath: 'prefer_trailing_comma/examples/same_line_skip_case.dart',
+      );
+      final config = {'break-on': 1};
+
+      final issues = PreferTrailingCommaRule(config).check(unit);
+
+      RuleTestHelper.verifyNoIssues(issues);
     });
 
     test('with default config reports issues for all supported parts',
@@ -180,7 +185,7 @@ void main() {
 
       RuleTestHelper.verifyIssues(
         issues: issues,
-        startLines: [28, 33, 37, 51, 63, 68, 79, 84, 89, 94],
+        startLines: [28, 33, 51, 63, 68, 79, 84, 89, 94],
       );
     });
 
@@ -201,19 +206,19 @@ void main() {
 
       RuleTestHelper.verifyIssues(
         issues: issues,
-        startLines: [28, 37, 51, 63, 68, 79, 84, 89, 94],
+        startLines: [28, 51, 63, 68, 79, 84, 89, 94],
       );
     });
 
     group('covers all supported scoped rules', () {
       final cases = <String, List<int>>{
-        'arguments': [13, 38],
-        'parameters': [4, 7, 58],
+        'arguments': [13],
+        'parameters': [4],
         'enum-values': [46],
-        'collections': [18, 23, 39, 40],
+        'collections': [18, 23],
         'type-arguments': [33],
         'type-parameters': [51],
-        'record-literals': [28, 37],
+        'record-literals': [28],
         'record-patterns': [79],
         'object-patterns': [84],
         'list-patterns': [89],

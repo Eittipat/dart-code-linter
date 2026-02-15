@@ -190,6 +190,10 @@ class _Visitor extends RecursiveAstVisitor<void> {
       return;
     }
 
+    if (_isSameLine(leftBracket, rightBracket)) {
+      return;
+    }
+
     final last = nodes.last;
 
     if (last.endToken.next?.type != TokenType.COMMA &&
@@ -213,4 +217,7 @@ class _Visitor extends RecursiveAstVisitor<void> {
 
   int _getLineNumber(SyntacticEntity entity) =>
       _lineInfo.getLocation(entity.offset).lineNumber;
+
+  bool _isSameLine(SyntacticEntity first, SyntacticEntity second) =>
+      _getLineNumber(first) == _getLineNumber(second);
 }
