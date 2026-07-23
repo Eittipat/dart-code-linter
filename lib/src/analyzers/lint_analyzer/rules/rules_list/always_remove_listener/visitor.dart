@@ -9,10 +9,10 @@ class _Visitor extends RecursiveAstVisitor<void> {
   void visitMethodDeclaration(MethodDeclaration node) {
     super.visitMethodDeclaration(node);
 
-    final parent = node.parent;
+    final parent = node.thisOrAncestorOfType<ClassDeclaration>();
     final body = node.body;
 
-    if (parent is! ClassDeclaration || body is! BlockFunctionBody) {
+    if (parent == null || body is! BlockFunctionBody) {
       return;
     }
 
@@ -64,13 +64,15 @@ class _Visitor extends RecursiveAstVisitor<void> {
   ) {
     for (final addedListener in addedListeners) {
       final target = addedListener.realTarget;
-      if (target is Identifier) {
+      final name = _targetName(target);
+      final element = _targetElement(target);
+      if (name != null) {
         _compareInvocation(
           addedListener,
           removedListeners,
           disposedListeners,
-          target.name,
-          target.element,
+          name,
+          element,
         );
       }
     }
@@ -120,7 +122,7 @@ class _Visitor extends RecursiveAstVisitor<void> {
     Iterable<MethodInvocation> removedListeners,
     Iterable<MethodInvocation> disposedListeners,
     String? targetName,
-    Element2? element,
+    Element? element,
   ) {
     final removedListener = removedListeners
         .where(
@@ -156,21 +158,21 @@ class _Visitor extends RecursiveAstVisitor<void> {
   }
 
   MethodDeclaration? _getDisposeMethodDeclaration(ClassDeclaration parent) =>
-      parent.members.firstWhereOrNull((member) =>
+      (parent.body as BlockClassBody).members.firstWhereOrNull((member) =>
               member is MethodDeclaration && member.name.lexeme == 'dispose')
           as MethodDeclaration?;
 
   bool _haveSameTargets(
     MethodInvocation removedListener,
     String? targetName,
-    Element2? element,
+    Element? element,
   ) {
     final removedTarget = removedListener.realTarget;
+    final removedName = _targetName(removedTarget);
+    final removedElement = _targetElement(removedTarget);
 
-    return removedTarget is Identifier &&
-        removedTarget.name == targetName &&
-        (removedTarget.element == element ||
-            removedTarget.element?.firstFragment == element?.firstFragment);
+    return removedName == targetName &&
+        _hasSameBaseElement(removedElement, element);
   }
 
   bool _haveSameCallbacks(
@@ -183,8 +185,33 @@ class _Visitor extends RecursiveAstVisitor<void> {
     return addedCallback is Identifier &&
         removedCallback is Identifier &&
         addedCallback.name == removedCallback.name &&
-        addedCallback.element == removedCallback.element;
+        _hasSameBaseElement(addedCallback.element, removedCallback.element);
   }
+
+  String? _targetName(Expression? target) {
+    if (target is Identifier) {
+      return target.name;
+    }
+    if (target is PropertyAccess) {
+      return '${target.target?.toSource()}.${target.propertyName.name}';
+    }
+
+    return null;
+  }
+
+  Element? _targetElement(Expression? target) {
+    if (target is Identifier) {
+      return target.element;
+    }
+    if (target is PropertyAccess) {
+      return target.propertyName.element;
+    }
+
+    return null;
+  }
+
+  bool _hasSameBaseElement(Element? a, Element? b) =>
+      a?.baseElement == b?.baseElement;
 
   bool _isRootWidget(DartType? type, DartType? rootType) =>
       type != null && type.getDisplayString() == rootType?.getDisplayString();

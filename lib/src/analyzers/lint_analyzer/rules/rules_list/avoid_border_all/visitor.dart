@@ -17,7 +17,7 @@ class _Visitor extends RecursiveAstVisitor<void> {
       var isAllConst = true;
 
       for (final argument in expression.argumentList.arguments) {
-        final arg = (argument as NamedExpression).expression;
+        final arg = asNamedArgument(argument)?.expression ?? argument;
         if (arg is Literal) {
           continue;
         } else if (arg is MethodInvocation ||
@@ -26,10 +26,12 @@ class _Visitor extends RecursiveAstVisitor<void> {
           isAllConst = false;
         } else if (arg is SimpleIdentifier) {
           final element = arg.element;
-          if (element is PropertyAccessorElement2 &&
-              !element.variable3!.isConst) {
-            isAllConst = false;
-          } else if (element is VariableElement2 && !element.isConst) {
+          if (element is PropertyAccessorElement) {
+            // ignore: deprecated_member_use
+            if (!element.variable.isConst) {
+              isAllConst = false;
+            }
+          } else if (element is VariableElement && !element.isConst) {
             isAllConst = false;
           }
         }

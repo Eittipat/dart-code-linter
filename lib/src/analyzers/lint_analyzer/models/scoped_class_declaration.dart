@@ -1,5 +1,6 @@
 import 'package:analyzer/dart/ast/ast.dart';
 
+import '../../../utils/ast_compat.dart';
 import 'class_type.dart';
 
 /// Represents a declaration of a class / mixin / extension.
@@ -17,8 +18,14 @@ class ScopedClassDeclaration {
 
     if (node is ExtensionDeclaration) {
       name = node.name?.lexeme;
-    } else if (node is NamedCompilationUnitMember) {
+    } else if (node is ClassDeclaration) {
+      name = node.namePart.typeName.lexeme;
+    } else if (node is MixinDeclaration) {
       name = node.name.lexeme;
+    } else if (node is EnumDeclaration) {
+      name = node.namePart.typeName.lexeme;
+    } else if (node is ExtensionTypeDeclaration) {
+      name = extensionTypeName(node);
     }
 
     return name ?? '';

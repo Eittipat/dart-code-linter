@@ -14,7 +14,12 @@ class _Visitor extends SimpleAstVisitor<void> {
       return;
     }
 
-    final onMountMethod = node.members.firstWhereOrNull((member) =>
+    final body = node.body;
+    if (body is! BlockClassBody) {
+      return;
+    }
+
+    final onMountMethod = body.members.firstWhereOrNull((member) =>
         member is MethodDeclaration &&
         member.name.lexeme == 'onMount' &&
         isOverride(member.metadata));
@@ -35,11 +40,13 @@ class _AssignmentExpressionVisitor extends RecursiveAstVisitor<void> {
   void visitAssignmentExpression(AssignmentExpression node) {
     super.visitAssignmentExpression(node);
 
-    final element = node.writeElement2;
-    if (element is PropertyAccessorElement2 &&
-        element.variable3!.isFinal &&
-        element.variable3!.isLate) {
-      wrongAssignments.add(node);
+    final element = node.writeElement;
+    if (element is PropertyAccessorElement) {
+      // ignore: deprecated_member_use
+      final variable = element.variable;
+      if (variable.isFinal && variable.isLate) {
+        wrongAssignments.add(node);
+      }
     }
   }
 }

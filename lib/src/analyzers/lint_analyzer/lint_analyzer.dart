@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:analyzer/dart/analysis/analysis_context.dart';
 import 'package:analyzer/dart/analysis/analysis_context_collection.dart';
 import 'package:analyzer/dart/analysis/results.dart';
+import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/syntactic_entity.dart';
 import 'package:path/path.dart';
 
 import '../../config_builder/config_builder.dart';
@@ -143,7 +145,7 @@ class LintAnalyzer {
 
         final unit = await context.currentSession.getResolvedUnit(filePath);
         if (unit is ResolvedUnitResult) {
-          final (issuesNo, fixesNo) = _analyzeAndFixFile(
+          final (issuesNo, fixesNo) = await _analyzeAndFixFile(
             unit,
             lintAnalysisConfig,
             rootFolder,
@@ -206,12 +208,12 @@ class LintAnalyzer {
     return (lintAnalysisConfig, analyzedFiles, report);
   }
 
-  (int issuesNo, int fixesNo) _analyzeAndFixFile(
+  Future<(int issuesNo, int fixesNo)> _analyzeAndFixFile(
     ResolvedUnitResult unit,
     LintAnalysisConfig config,
     String rootFolder, {
     required String filePath,
-  }) {
+  }) async {
     final result = _analyzeFile(unit, config, rootFolder, filePath: filePath);
 
     if (result == null || result.issues.isEmpty) {
@@ -222,23 +224,30 @@ class LintAnalyzer {
     var fixedContent = originalContent.toString();
     final fixedIssues = <Issue>[];
 
-    for (final issue in result.issues) {
-      final fix = issue.suggestions;
+    // Issue locations are computed against the original content, so applying
+    // fixes from the start would shift every subsequent offset and either
+    // corrupt the output or throw a RangeError (issue #188). Apply them from
+    // the end of the file towards the start so earlier offsets stay valid.
+    final issuesToFix = result.issues
+        .where((issue) => issue.suggestions != null)
+        .toList()
+      ..sort(
+        (a, b) => b.location.start.offset.compareTo(a.location.start.offset),
+      );
 
-      if (fix != null) {
-        for (final suggestion in fix) {
-          fixedContent = fixedContent.replaceRange(
-            issue.location.start.offset,
-            issue.location.end.offset,
-            suggestion.replacement,
-          );
-        }
-
-        fixedIssues.add(issue);
+    for (final issue in issuesToFix) {
+      for (final suggestion in issue.suggestions!) {
+        fixedContent = fixedContent.replaceRange(
+          issue.location.start.offset,
+          issue.location.end.offset,
+          suggestion.replacement,
+        );
       }
+
+      fixedIssues.add(issue);
     }
 
-    _applyFixesToFile(fixedContent, filePath);
+    await _applyFixesToFile(fixedContent, filePath);
 
     return (result.issues.length, fixedIssues.length);
   }
@@ -336,10 +345,12 @@ class LintAnalyzer {
       final visitor = ScopeVisitor();
       internalResult.unit.visitChildren(visitor);
 
-      final classMetrics = _checkClassMetrics(visitor, internalResult, config);
-      final fileMetrics = _checkFileMetrics(visitor, internalResult, config);
+      final classMetrics =
+          _checkClassMetrics(visitor, internalResult, config, ignores);
+      final fileMetrics =
+          _checkFileMetrics(visitor, internalResult, config, ignores);
       final functionMetrics =
-          _checkFunctionMetrics(visitor, internalResult, config);
+          _checkFunctionMetrics(visitor, internalResult, config, ignores);
       final antiPatterns = _checkOnAntiPatterns(
         ignores,
         internalResult,
@@ -421,11 +432,14 @@ class LintAnalyzer {
     ScopeVisitor visitor,
     InternalResolvedUnitResult source,
     LintAnalysisConfig config,
+    Suppression ignores,
   ) {
     final classRecords = <ScopedClassDeclaration, Report>{};
 
     for (final classDeclaration in visitor.classes) {
       final metrics = <MetricValue>[];
+      final declarationLine =
+          _declarationLine(classDeclaration.declaration, ignores);
 
       for (final metric in config.classesMetrics) {
         if (metric.supports(
@@ -435,13 +449,18 @@ class LintAnalyzer {
           source,
           metrics,
         )) {
-          metrics.add(metric.compute(
+          final computed = metric.compute(
             classDeclaration.declaration,
             visitor.classes,
             visitor.functions,
             source,
             metrics,
-          ));
+          );
+          metrics.add(
+            ignores.isSuppressedAt(metric.id, declarationLine)
+                ? computed.suppressed()
+                : computed,
+          );
         }
       }
 
@@ -464,6 +483,7 @@ class LintAnalyzer {
     ScopeVisitor visitor,
     InternalResolvedUnitResult source,
     LintAnalysisConfig config,
+    Suppression ignores,
   ) {
     final metrics = <MetricValue>[];
 
@@ -475,13 +495,16 @@ class LintAnalyzer {
         source,
         metrics,
       )) {
-        metrics.add(metric.compute(
+        final computed = metric.compute(
           source.unit,
           visitor.classes,
           visitor.functions,
           source,
           metrics,
-        ));
+        );
+        metrics.add(
+          ignores.isSuppressed(metric.id) ? computed.suppressed() : computed,
+        );
       }
     }
 
@@ -496,11 +519,14 @@ class LintAnalyzer {
     ScopeVisitor visitor,
     InternalResolvedUnitResult source,
     LintAnalysisConfig config,
+    Suppression ignores,
   ) {
     final functionRecords = <ScopedFunctionDeclaration, Report>{};
 
     for (final function in visitor.functions) {
       final metrics = <MetricValue>[];
+      final declarationLine =
+          _declarationLine(function.declaration, ignores);
 
       for (final metric in config.methodsMetrics) {
         if (metric.supports(
@@ -510,13 +536,18 @@ class LintAnalyzer {
           source,
           metrics,
         )) {
-          metrics.add(metric.compute(
+          final computed = metric.compute(
             function.declaration,
             visitor.classes,
             visitor.functions,
             source,
             metrics,
-          ));
+          );
+          metrics.add(
+            ignores.isSuppressedAt(metric.id, declarationLine)
+                ? computed.suppressed()
+                : computed,
+          );
         }
       }
 
@@ -528,6 +559,14 @@ class LintAnalyzer {
     }
 
     return functionRecords;
+  }
+
+  int _declarationLine(SyntacticEntity declaration, Suppression ignores) {
+    final offset = declaration is AnnotatedNode
+        ? declaration.firstTokenAfterCommentAndMetadata.offset
+        : declaration.offset;
+
+    return ignores.lineInfo.getLocation(offset).lineNumber;
   }
 
   bool _isSupported(FileResult result) =>
