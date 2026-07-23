@@ -24,10 +24,10 @@ class PreferTrailingCommaRule extends DartRule {
   static const _warningMessage = 'Prefer trailing comma.';
   static const _correctionMessage = 'Add trailing comma.';
 
-  final int? _itemsBreakpoint;
+  final _BreakOnConfig _breakOnConfig;
 
   PreferTrailingCommaRule([Map<String, Object> config = const {}])
-      : _itemsBreakpoint = _ConfigParser.parseBreakpoint(config),
+      : _breakOnConfig = _ConfigParser.parseBreakOnConfig(config),
         super(
           id: ruleId,
           severity: readSeverity(config, Severity.style),
@@ -38,14 +38,14 @@ class PreferTrailingCommaRule extends DartRule {
   @override
   Map<String, Object?> toJson() {
     final json = super.toJson();
-    json[_ConfigParser._breakOnConfigName] = _itemsBreakpoint;
+    json[_ConfigParser._breakOnConfigName] = _breakOnConfig.toJson();
 
     return json;
   }
 
   @override
   Iterable<Issue> check(InternalResolvedUnitResult source) {
-    final visitor = _Visitor(source.lineInfo, _itemsBreakpoint);
+    final visitor = _Visitor(source.lineInfo, _breakOnConfig);
     source.unit.visitChildren(visitor);
 
     return visitor.nodes

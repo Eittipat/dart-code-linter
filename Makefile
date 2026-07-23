@@ -1,10 +1,13 @@
 .PHONY: help install-dev generate-skills generate-skills-all test format lint test-analyzer-compat test-analyzer-compat-full
+.PHONY: clear-aot-cache analyze-example analyze-example-dcl analyze-example-all
 
 VENV_PYTHON := .venv/bin/python3
 VENV_PIP := .venv/bin/pip
 VENV_PYTEST := .venv/bin/pytest
 VENV_RUFF := .venv/bin/ruff
 TARGETS ?=
+PLUGIN_CACHE_DIR ?= $(HOME)/.dartServer/.plugin_manager
+EXAMPLE_MAIN ?= example/lib/main.dart
 
 help:
 	@echo "Targets:"
@@ -16,6 +19,10 @@ help:
 	@echo "  test-analyzer-compat-full Run full dart test with analyzer 10.x, 11.x, 12.x, 13.x, 14.x"
 	@echo "  format          Format scripts/ with ruff"
 	@echo "  lint            Lint scripts/ with ruff"
+	@echo "  clear-aot-cache Remove analyzer plugin AOT cache"
+	@echo "  analyze-example Run dart analyzer for $(EXAMPLE_MAIN)"
+	@echo "  analyze-example-dcl Run DCL analyzer for $(EXAMPLE_MAIN)"
+	@echo "  analyze-example-all Run both analyzer and DCL analyzer"
 
 install-dev:
 	python3 -m venv .venv
@@ -41,3 +48,15 @@ test-analyzer-compat:
 
 test-analyzer-compat-full:
 	$(VENV_PYTHON) scripts/test_analyzer_compat.py
+
+clear-aot-cache:
+	@echo "Clearing analyzer plugin cache at $(PLUGIN_CACHE_DIR)"
+	@rm -rf "$(PLUGIN_CACHE_DIR)"
+
+analyze-example:
+	dart analyze "$(EXAMPLE_MAIN)"
+
+analyze-example-dcl:
+	dart run dart_code_linter:metrics analyze "$(EXAMPLE_MAIN)"
+
+analyze-example-all: analyze-example analyze-example-dcl
